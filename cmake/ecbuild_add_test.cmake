@@ -418,6 +418,24 @@ function( ecbuild_add_test )
       else()
           set( _PAR_COMMAND ${_LAUNCH} ${_PAR_COMMAND} )
       endif()
+
+    # If specified, wrap serial tests with launch command
+    else()
+
+      if ( DEFINED SEREXEC )
+        if ( DEFINED SEREXEC_NUMPROC_FLAG )
+          set( _LAUNCH ${SEREXEC} ${SEREXEC_NUMPROC_FLAG} 1 )
+        else()
+          set( _LAUNCH ${SEREXEC} )
+        endif()
+        ecbuild_debug("ecbuild_add_test(${_PAR_TARGET}): running as ${_LAUNCH} ${_PAR_COMMAND}")
+        if( TARGET ${_PAR_COMMAND} )
+            set( _PAR_COMMAND ${_LAUNCH} $<TARGET_FILE:${_PAR_COMMAND}> )
+        else()
+            set( _PAR_COMMAND ${_LAUNCH} ${_PAR_COMMAND} )
+        endif()
+      endif()
+
     endif()
 
     ### define the test
